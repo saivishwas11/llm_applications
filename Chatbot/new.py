@@ -9,7 +9,7 @@ from google.generativeai.types import GenerationConfig
 load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-# --- Configuration ---
+# --- Configuration ---of the API
 if not GOOGLE_API_KEY:
     st.error("Google API key not found. Please set the GOOGLE_API_KEY environment variable.")
     st.stop()
@@ -17,12 +17,12 @@ if not GOOGLE_API_KEY:
 genai.configure(api_key=GOOGLE_API_KEY)
 MODEL_NAME = "gemini-1.5-flash"
 
-# --- Initialize chat history in Streamlit's session state ---
+# Initializin chat history in Streamlit's session state
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
     st.session_state.chat_history.append({"role": "bot", "text": "Hello! I'm here to provide general information and support regarding mental health topics. How can I help you today?", "is_intro": True})
 
-# --- Define the System Instruction for Mental Health Focus and Brevity ---
+# Defining the System Instruction for Mental Health Focus and Brevity
 SYSTEM_INSTRUCTION = """
 You are a supportive, empathetic, and informative mental health awareness and information assistant.
 Your primary goal is to provide general knowledge about mental health topics, discuss coping strategies, promote well-being, and offer encouragement.
@@ -39,31 +39,31 @@ Strictly adhere to the following guidelines:
 7.  **Safety First:** Your responses must prioritize the safety and well-being of the user.
 """
 
-# --- Define Generation Configuration for Brevity ---
+#Define Generation Configuration for Brevity
 BRIEF_GENERATION_CONFIG = GenerationConfig(
-    max_output_tokens=200, # Adjust this value as needed
+    max_output_tokens=200,
     temperature=0.7,
 )
 
 
-# --- Streamlit Sidebar (Top Left) ---
+# Streamlit Sidebar (Top Left) ---
 with st.sidebar:
-    # === Add Logo ===
+    # ===  Logo ===
     logo_path = "C:\\Users\\saivi\\Downloads\\download.png" # <-- CHANGE THIS LINE! (e.g., "logo.png" if in same dir)
-    # Recommended width for sidebar logos is usually 150-250px
+    # width for sidebar logos is usually 150-250px
     desired_logo_width = 100 # Pixels
 
     if os.path.exists(logo_path):
-         st.image(logo_path, width=desired_logo_width) # Using width parameter
+         st.image(logo_path, width=desired_logo_width)
     else:
          st.warning(f"Logo not found at {logo_path}. Please update the path or use a URL.")
          st.markdown("## Your Logo Here") # Placeholder text
 
 
-    # --- Chat History Dashboard Section (Moved to Sidebar) ---
+    # Chat History Dashboard Section (Moved to Sidebar)
     st.subheader("Conversation History")
 
-    # Optional: Add a button to clear the history
+    # Option to clear chat history
     def clear_chat_history():
          st.session_state.chat_history = []
          st.session_state.chat_history.append({"role": "bot", "text": "Hello! I'm here to provide general information and support regarding mental health topics. How can I help you today?", "is_intro": True})
@@ -80,11 +80,11 @@ with st.sidebar:
         st.markdown("---") # Add a separator between messages
 
 
-# --- Main Content Area ---
-st.title("Mental Health Awareness Assistant")
+# Main Content Area
+st.title("Mental Health Support Assistant")
 st.markdown("### Your guide to understanding mental well-being.")
 
-# --- Initialize the Gemini model and the chat session ---
+# Initialize the Gemini model and the chat session
 try:
     model = genai.GenerativeModel(model_name=MODEL_NAME, system_instruction=SYSTEM_INSTRUCTION)
 
@@ -102,9 +102,9 @@ except Exception as e:
     st.error(f"Error initializing model or chat: {e}")
     st.stop()
 
-# --- Display immediate/latest chats in the main view ---
+# Display latest chats in the main view
 st.subheader("Current Conversation")
-# Define how many latest messages to display in the main area
+# Definint the required number of latest messages to display in the main area
 num_latest_messages = 2 # Last user input + last bot response
 
 # Iterate through the last 'num_latest_messages' from chat_history
@@ -116,10 +116,10 @@ for message in st.session_state.chat_history[max(0, len(st.session_state.chat_hi
         st.markdown(message["text"])
 
 
-# --- Chat Input Area (Main Area) ---
+# Chat Input Area (Main Area)
 user_input = st.chat_input("Ask about mental health topics...")
 
-# --- Handle New Input and Response ---
+# Handle New Input and Response
 if user_input:
     # Save user message to history
     st.session_state.chat_history.append({"role": "user", "text": user_input})
@@ -140,5 +140,5 @@ if user_input:
     # Save bot response to history
     st.session_state.chat_history.append({"role": "bot", "text": bot_response_text})
 
-    # --- Rerun the app to update both sidebar and main view history ---
+    # Rerun the app to update both sidebar and main view history
     st.rerun()
